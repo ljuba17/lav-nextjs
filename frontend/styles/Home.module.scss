@@ -125,13 +125,21 @@
 }
 
 .btn_add {
-  button {
-    padding: 25px;
-  }
+  padding: 5px 15px;
+  color: #fff;
+  background: #0070f3;
+  border: none;
 }
 
 @media (max-width: 600px) {
   .grid {
     width: 100%;
+  }
+  .btn_add {
+    padding: 10px 15px;
+  }
+
+  .add_user {
+    flex-direction: column;
   }
 }
