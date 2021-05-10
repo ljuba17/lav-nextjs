@@ -7,13 +7,13 @@ import { getMainDefinition } from "@apollo/client/utilities";
 import { WebSocketLink } from "@apollo/client/link/ws";
 
 const httpLink = new HttpLink({
-  uri: "http://localhost:8080/v1/graphql",
+  uri: "http://192.168.1.2:8080/v1/graphql",
 });
 
 const wsLink = process.browser
   ? new WebSocketLink({
       // if you instantiate in the server, the error will be thrown
-      uri: `ws://localhost:8080/v1/graphql`,
+      uri: `ws://192.168.1.2:8080/v1/graphql`,
       options: {
         reconnect: true,
       },

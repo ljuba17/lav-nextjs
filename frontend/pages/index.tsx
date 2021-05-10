@@ -1,5 +1,6 @@
 import Head from "next/head";
-import { gql, useQuery, useSubscription } from "@apollo/client";
+import { gql, useQuery, useMutation, useSubscription } from "@apollo/client";
+import { useState } from "react";
 
 import styles from "../styles/Home.module.scss";
 
@@ -13,14 +14,64 @@ const GET_USERS = gql`
   }
 `;
 
+const INSERT_USER = gql`
+  mutation InsertUser($lastName: String, $firstName: String) {
+    insert_users(objects: { last_name: $lastName, first_name: $firstName }) {
+      affected_rows
+    }
+  }
+`;
+
+const DELETE_USER = gql`
+  mutation DeleteUser($id: Int) {
+    delete_users(where: { id: { _eq: $id } }) {
+      affected_rows
+    }
+  }
+`;
+
 export default function Home() {
   const { loading, error, data } = useSubscription(GET_USERS);
+  const [lastName, setLastName] = useState("");
+  const [firstName, setFirstName] = useState("");
+
+  const [addUser, { userData }] = useMutation(INSERT_USER);
+  const [deleteUser, { deletedUserData }] = useMutation(DELETE_USER);
 
   if (loading) return "Učitavanje podataka...";
   if (error) return `Greška pri skupljanju podataka! ${error.message}`;
 
   const currentDate = new Date();
   const year = currentDate.getFullYear();
+
+  const changeFirstName = (event) => {
+    setFirstName(event.target.value);
+  };
+  const changeLastName = (event) => {
+    setLastName(event.target.value);
+  };
+
+  const add_user = () => {
+    console.log(`adding ${lastName} ${firstName}`);
+    addUser({
+      variables: {
+        lastName: lastName,
+        firstName: firstName,
+      },
+    });
+    setLastName("");
+    setFirstName("");
+  };
+
+  const remove_user = (id) => {
+    console.log(`removing ${id}`);
+    deleteUser({
+      variables: {
+        id,
+      },
+    });
+    return id;
+  };
 
   return (
     <div className={styles.container}>
@@ -34,11 +85,34 @@ export default function Home() {
         <h1 className={styles.title}>Realtime</h1>
 
         <p className={styles.description}>Lista korisnika</p>
+        <div className={styles.add_user}>
+          <input
+            value={lastName}
+            onChange={(e) => changeLastName(e)}
+            type="text"
+            placeholder="Prezime korisnika"
+            className={styles.user_input}
+          />
+          <input
+            value={firstName}
+            onChange={(e) => changeFirstName(e)}
+            type="text"
+            placeholder="Ime korisnika"
+            className={styles.user_input}
+          />
+          <button className={styles.btn_add} onClick={add_user}>
+            Dodaj
+          </button>
+        </div>
 
         <div className={styles.grid}>
           {data.users.map((user) => (
-            <div key={user.id} className={styles.card}>
-              {user.last_name} {user.first_name}
+            <div
+              key={user.id}
+              className={styles.card}
+              onClick={(e) => remove_user(user.id)}
+            >
+              {user.id} : {user.last_name} {user.first_name}
             </div>
           ))}
         </div>

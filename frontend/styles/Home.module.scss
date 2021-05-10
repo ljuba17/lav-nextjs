@@ -88,7 +88,7 @@
   border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  // cursor: pointer;
+  cursor: pointer;
 }
 
 .card:hover,
@@ -112,6 +112,22 @@
 .logo {
   height: 1em;
   margin-left: 0.5rem;
+}
+
+.add_user {
+  display: flex;
+  justify-content: space-around;
+  gap: 5px;
+}
+
+.user_input {
+  padding: 10px;
+}
+
+.btn_add {
+  button {
+    padding: 25px;
+  }
 }
 
 @media (max-width: 600px) {
